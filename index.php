@@ -1,30 +1,38 @@
 <?php
+
+
 $conn = mysqli_connect("localhost","wepro","nitin123","demo");
-session_start();
-$email=$pass="";
-if(isset($_POST['login']))
+
+
+if(isset($_POST['submit']))
 {
-	$email=($_POST['email']);
-	$pass=($_POST['pass']);
-
-	    // echo "SELECT * FROM form WHERE email='$email' AND pass='$pass'"; die;
-	    // $querry = "SELECT * FROM form WHERE email='r@gmail.com' AND pass='password' OR 1 = 1";
-		$sql=mysqli_query($conn,"SELECT * FROM form WHERE email='$email' AND pass='$pass'");
-		if(mysqli_num_rows($sql) == 1) 
-		{
-			$_SESSION['username'] = $email;
-			$_SESSION['success'] = "You are login successfully ";
-			header('location: welcome.php');
-		}
-		
-		else
-		{
-			echo "enter vaild email & pass";
-		}
+	$name = $_POST['name'];
+	$father = $_POST['father'];
+	$email = $_POST['email'];
+// duplicate email
+	$duplicate= mysqli_query($conn, "SELECT * FROM form where email='$email'");
+	if (mysqli_num_rows($duplicate) > 0)
+	{
+	echo "Email id already exists.";
 	}
+	else
+	{
+// duplicate email
+	$pass = $_POST['pass'];
+	$sql = (mysqli_query($conn, "INSERT INTO form (name,father,email,pass) VALUES('$name','$father','$email','$pass')")) or die('s');
+		if ($sql)
+	{
+		echo "data insert successfully";
+		// header('Refresh: 2; URL=login.php');
+		header('location:login.php');
+	}
+	else
+	{
+		echo ' data not insert';
+	}
+}
+}
 ?>
-
-
 
 
 <head>
@@ -47,7 +55,7 @@ if(isset($_POST['login']))
 	<div class="card">
 
 	  <h5 class="card-header info-color white-text text-center py-4">
-	    <strong>Login Form</strong>
+	    <strong>Registion Form</strong>
 	  
 	  </h5>
 
@@ -56,7 +64,15 @@ if(isset($_POST['login']))
 
 	  	
 	    <!-- Form -->
-	    <form class="text-center mt-4" style="color: #757575;" action="" method="POST">
+	    <form class="text-center mt-4" style="color: #757575;" action="" method="post">
+
+	    	<!-- name -->
+	       	<input type="text" id="name" class="form-control mb-4" name="name" placeholder="Name" value="<?php echo $name; ?>"required>
+
+			<!-- father -->
+	        <input type="text" id="Father" class="form-control mb-4" name="father" placeholder="Father" value="<?php echo $father; ?>" required>
+	       
+
 
 	      <!-- Email -->
 	        <input type="email" id="E-mail" class="form-control mb-4" name="email"  placeholder="E-mail" value="<?php echo $email; ?>" required>
@@ -69,8 +85,8 @@ if(isset($_POST['login']))
 	        <div>
 	          <!-- Remember me -->
 	          <div class="">
-	         	 <p>New User?
-	        		<a href="index.php">Register</a>
+	         	 <p>already member?
+	        		<a href="login.php">LogIn</a>
 	     	 	 </p>
 	          </div>
 	        </div>
@@ -82,7 +98,7 @@ if(isset($_POST['login']))
 
 	      <!-- Sign in button -->
 	      <!-- <button class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" type="submit">Sign Up</button> -->
-	      <input type="submit"  class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" name="login">
+	      <input type="submit"  class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" name="submit">
 
 	    </form>
 	    <!-- Form -->
